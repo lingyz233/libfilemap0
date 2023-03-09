@@ -1,9 +1,9 @@
-.PHONY: all dynamic static clean
+.PHONY: all shared static clean
 
 all: libfilemap.a libfilemap.so
 	@echo done
 
-dynamic: libfilemap.so
+shared: libfilemap.so
 
 static: libfilemap.a
 

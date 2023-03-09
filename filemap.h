@@ -32,8 +32,8 @@ struct filemap {
 };
 
 struct struct_filemap_functions {
-  _Bool (*open) (struct filemap * fmap, char * path, int fflag, int flags, int prot);
-  _Bool (*creat) (struct filemap * fmap, char * path, int fflag, int flags, int prot, size_t hoped_size);
+  _Bool (*open) (struct filemap * fmap, char * path, int fflag, int flags, int prot, int fmode, size_t hoped_size);
+  _Bool (*creat) (struct filemap * fmap, char * path, int fflag, int flags, int prot, int fmode, size_t hoped_size);
   _Bool (*resize) (struct filemap * fmap, int newsize);
   _Bool (*close) (struct filemap * fmap);
 };

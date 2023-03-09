@@ -6,6 +6,8 @@
 
 #include<err.h>
 #include<math.h>
+#include<stdio.h>
+#include<stdlib.h>
 #include<string.h>
 
 #define __PRIVATE__ static
@@ -26,10 +28,10 @@
 */
 
 __PUBLIC__ _Bool
-filemap_openfile (struct filemap * fmap, char * path, int fflag, int flags, int prot);
+filemap_openfile (struct filemap * fmap, char * path, int fflag, int flags, int prot, int fmode, size_t hoped_size);
 
 __PUBLIC__ _Bool
-filemap_newfile (struct filemap * fmap, char * path, int fflag, int flags, int prot, size_t hoped_size);
+filemap_newfile (struct filemap * fmap, char * path, int fflag, int flags, int prot, int fmode, size_t hoped_size);
 
 __PUBLIC__ _Bool
 filemap_newsize (struct filemap * fmap, int newsize);
@@ -56,17 +58,29 @@ getmapsize (size_t needsize)
 }
 
 __PUBLIC__ _Bool
-filemap_openfile (struct filemap * fmap, char * path, int fflag, int flags, int prot)
+filemap_openfile (struct filemap * fmap, char * path, int fflag, int flags, int prot, int fmode, size_t hoped_size)
 {
   int fd;
-  if ((fd = open (path, fflag, 0644)) < 0)
+  if ((fd = open (path, fflag, fmode)) < 0)
   {
     warn ("fail to open %s", path);
     return 1;
   }
 
+  if (fflag & O_CREAT)
+  {
+    if ( ftruncate (fmap->fd, hoped_size) )
+    {
+      warn ("fail ftruncate %s,size=%ld", fmap->path, hoped_size);
+      return 1;
+    }
+	fmap->fsize = hoped_size;
+  }
+  else
+  {
+    fmap->fsize = lseek (fd, 0, SEEK_END);
+  }
 
-  fmap->fsize = lseek (fd, 0, SEEK_END);
   fmap->fd = fd;
 
   fmap->msize = getmapsize (fmap->fsize);
@@ -84,10 +98,17 @@ filemap_openfile (struct filemap * fmap, char * path, int fflag, int flags, int 
 }
 
 __PUBLIC__ _Bool
-filemap_newfile (struct filemap * fmap, char * path, int fflag, int flags, int prot, size_t hoped_size)
+filemap_newfile (struct filemap * fmap, char * path, int fflag, int flags, int prot, int fmode, size_t hoped_size)
+{
+  fprintf (stderr, "filemap.creat is deprecated\n");
+  exit (1);
+}
+/*
+__PUBLIC__ _Bool
+filemap_newfile (struct filemap * fmap, char * path, int fflag, int flags, int prot, int fmode, size_t hoped_size)
 {
   int fd;
-  if ((fd = creat (path, fflag)) < 0)
+  if ((fd = open (path, fflag, fmode)) < 0)
   {
     warn ("fail to create %s", path);
     return 1;
@@ -109,7 +130,7 @@ filemap_newfile (struct filemap * fmap, char * path, int fflag, int flags, int p
   }
   return 0;
 }
-
+*/
 __PUBLIC__ _Bool
 filemap_newsize (struct filemap * fmap, int newsize)
 {
