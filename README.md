@@ -15,4 +15,14 @@ struct struct_filemap_functions {
 } filemap;
 ```
 #### filemap.open ()
-arguments `fflag` and `fmode` is passed to open () : `open (path, fflag, fmode)`, arguments `flags` and `prot` is passed to `mmap ()`, argument `hoped_size` is ignored if there is no `O_CREAT` in argument `fflag`. If there is an `O_CREAT` flag in argument `fflag`, the hoped_size is passed to `ftruncate ()` to specify the file size.
+arguments `fflag` and `fmode` is passed to open () : `open (path, fflag, fmode)`, <br />
+arguments `flags` and `prot` is passed to `mmap ()`, <br />
+argument `hoped_size` is ignored if there is no `O_CREAT` in argument `fflag`. If there is an `O_CREAT` flag in argument `fflag`, the `hoped_size` is passed to `ftruncate ()` to specify the file size. <br />
+
+#### filemap.resize ()
+argument `newsize` is passed to `ftruncate ()` to resize the file. <br />
+If `newsize` is smaller than original size, the file will be cut off, if `newsize` is bigger than original size, the new space will be filled with zero.
+
+#### filemap.close ()
+close and unmap the file
+

@@ -13,20 +13,6 @@
 #define __PRIVATE__ static
 #define __PUBLIC__  static
 
-/* struct filemap fm;
- * 打开已有文件 :
- * filemap_openfile (&fm, "./exemple.txt", O_RDWR, MAP_SHARED, PROT_READ|PROT_WRITE);
- * 创建100byte的新文件 :
- * filemap_newfile (&fm,  "./exemple.txt", O_RDWR, MAP_SHARED, PROT_READ|PROT_WRITE, 100);
- * (注 : filemap_openfile filemap_newfile 的第3个参数直接传递给open () 或 creat (), 第4,5个参数直接传给 mmap () )
- * 使用文件 : 例如给文件第一个字节写'a'
- * fm.d[0] = 'a'; (注 : fm.d默认是char*类型)
- * 调整文件大小到1kb :
- * filemap_newsize (&fm, 1024)
- * 关闭文件 :
- * filemap_close (&fm);
-*/
-
 __PUBLIC__ _Bool
 filemap_openfile (struct filemap * fmap, char * path, int fflag, int flags, int prot, int fmode, size_t hoped_size);
 
@@ -147,6 +133,8 @@ filemap_newsize (struct filemap * fmap, int newsize)
 
   if (newsize <= fmap->msize)
   {
+    if (fmap->fsize > newsize)
+      memset (fmap->d + newsize, 0, fmap->fsize - newsize);
     return 0;
   }
 
