@@ -27,6 +27,13 @@ filemap_close (struct filemap * fmap);
 
 struct struct_filemap_functions filemap = {filemap_openfile, filemap_newfile, filemap_newsize, filemap_close};
 
+inline static float
+mylog (float x)
+{
+  float dx = x - 1;
+  return 0 + dx * (1. + dx * (-.5 + dx * (1./6) ));
+}
+
 __PRIVATE__ size_t
 getmapsize (size_t needsize)
 {
