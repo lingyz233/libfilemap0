@@ -53,6 +53,8 @@ filemap_openfile (struct filemap * fmap, char * path, int fflag, int flags, int 
     return 1;
   }
 
+  fmap->fd = fd;
+
   if (fflag & O_CREAT)
   {
     if ( ftruncate (fmap->fd, hoped_size) )
@@ -66,8 +68,6 @@ filemap_openfile (struct filemap * fmap, char * path, int fflag, int flags, int 
   {
     fmap->fsize = lseek (fd, 0, SEEK_END);
   }
-
-  fmap->fd = fd;
 
   fmap->msize = getmapsize (fmap->fsize);
   fmap->path = path;
