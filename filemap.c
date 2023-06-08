@@ -138,13 +138,6 @@ filemap_newsize (struct filemap * fmap, int newsize)
   const char * const path = fmap->path;
   const int prot = fmap->prot, flags = fmap->flags, fflag = fmap->fflag, fd = fmap->fd;
 
-  if (newsize <= fmap->msize)
-  {
-    if (fmap->fsize > newsize)
-      memset (fmap->d + newsize, 0, fmap->fsize - newsize);
-    return 0;
-  }
-
   fmap->fsize = newsize;
 
   if (fmap->flags & MAP_PRIVATE)
